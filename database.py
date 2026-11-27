@@ -20,3 +20,8 @@ def get_database():
 
 def get_movies_collection():
     return get_database()["movies"]
+
+
+def dbConnection():
+    """Compatibility helper used by the existing Flask routes."""
+    return get_database()
