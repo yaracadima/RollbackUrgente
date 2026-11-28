@@ -5,7 +5,9 @@ from functools import lru_cache
 
 from pymongo import MongoClient
 
+from dotenv import load_dotenv
 
+load_dotenv()
 @lru_cache(maxsize=1)
 def get_database():
     """Return the configured MongoDB database, creating the client lazily."""
@@ -25,3 +27,4 @@ def get_movies_collection():
 def dbConnection():
     """Compatibility helper used by the existing Flask routes."""
     return get_database()
+
