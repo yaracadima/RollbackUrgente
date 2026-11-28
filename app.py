@@ -11,6 +11,17 @@ app = Flask(__name__)
 db = dbase.dbConnection()
 movies_collection = db["movies"]
 
+# Validar ID de MongoDB
+def get_movie(id):
+    try:
+        movie = movies_collection.find_one({
+            "_id": ObjectId(id)
+        })
+        if movie is None:
+            abort(404)
+        return movie
+    except InvalidId:
+        abort(404)
 
 @app.route("/")
 def catalog_home():
@@ -43,6 +54,38 @@ def new_movie():
 
     movies_collection.insert_one(movie)
     return redirect(url_for("list_movies"))
+
+#HU-03 editar datos  pelicula\
+@app.route("/movies/<id>/edit", methods=["POST"])
+def update_movie(id):
+
+    get_movie(id)
+
+    try:
+        title = request.form["title"].strip()
+        genre = request.form["genre"].strip()
+        year = request.form["year"].strip()
+        poster_url = request.form["poster_url"].strip()
+
+        if not title or not genre:
+            abort(400, description="El título y el género son obligatorios.")
+
+        movies_collection.update_one(
+            {"_id": ObjectId(id)},
+            {
+                "$set": {
+                    "title": title,
+                    "genre": genre,
+                    "year": year,
+                    "poster_url": poster_url,
+                }
+            }
+        )
+
+        return redirect(url_for("home"))
+
+    except (ValueError, KeyError):
+        abort(400, description="Datos del producto no válidos")
 
 # HU-05: listar el catálogo de películas
 @app.route("/movies")
