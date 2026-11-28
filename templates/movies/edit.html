@@ -1,0 +1,75 @@
+
+{% extends "base.html" %}
+
+{% block title %}Editar producto{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-warning">
+        <h4>Editar pelicula</h4>
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST">
+
+            <label class="form-label">Titulo</label>
+            <input type="text" name="title"
+                   class="form-control mb-3"
+                   value="{{ movie.title }}" required>
+
+            <label class="form-label">Year</label>
+            <input type="number" name="stock"
+                   class="form-control mb-3"
+                   min="0" step="2026"
+                   value="{{ movie.year }}" required>
+
+            <label class="form-label">Genero</label>
+            <select name="genre"
+                    class="form-select mb-3" required>
+
+                <option value="Terror"
+                    {% if movie.genre == 'Terror' %}selected{% endif %}>
+                    Terror
+                </option>
+
+                <option value="Comedia"
+                    {% if movie.genre == 'Comedia' %}selected{% endif %}>
+                    Comedia
+                </option>
+
+                <option value="Romance"
+                    {% if movie.genre == 'Romance' %}selected{% endif %}>
+                    Romance
+                </option>
+
+                <option value="Otro"
+                    {% if movie.genre == 'Otro' %}selected{% endif %}>
+                    Otro
+                </option>
+
+            </select>
+
+            <label class="form-label">URL del poster</label>
+            <input type="url" name="poster_url"
+                   class="form-control mb-3"
+                   value="{{ movie.poster_url }}">
+
+            <button type="submit" class="btn btn-warning">
+                Actualizar pelicula
+            </button>
+
+            <a href="{{ url_for('home') }}"
+               class="btn btn-secondary">
+                Cancelar
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
