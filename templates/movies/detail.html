@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ movie.title }}</h1>
+  {% set default_poster = url_for('static', filename='images/poster-placeholder.svg') %}
+  <img src="{{ movie.get('poster_url') or default_poster }}" alt="Póster de {{ movie.title }}"
+       class="img-fluid rounded mb-3" width="180"
+       onerror="this.onerror=null;this.src='{{ default_poster }}'">
+  <h2>Próximas funciones</h2>
+  <ul>
+  {% for starts_at in upcoming %}
+    <li>
+      {{ starts_at.strftime("%d/%m/%Y a las %H:%M") }}
+      · Asignación de sala pendiente
+    </li>
+  {% else %}
+    <li>No hay próximas funciones programadas.</li>
+  {% endfor %}
+</ul>
+  <a href="{{ url_for('list_movies') }}">Volver al catálogo</a>
+  
+{% endblock %}
