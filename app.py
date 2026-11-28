@@ -190,6 +190,21 @@ def update_movie(movie_id):
 
     return redirect(url_for("list_movies"))
 
+# HU-04 eliminar una pelicula del catalogo
+@app.route("/movies/<id>/delete", methods=["GET", "POST"])
+def delete_movie(id):
+
+    movie = get_movie(id)
+
+    if request.method == "POST":
+        movies_collection.delete_one({
+            "_id": ObjectId(id)
+        })
+
+        return redirect(url_for("list_movies"))
+
+    return render_template("movies/delete.html", movie=movie)
+
 # HU-05: listar el catálogo de películas
 @app.route("/movies")
 def list_movies():

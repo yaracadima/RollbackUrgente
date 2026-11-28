@@ -36,7 +36,7 @@
             <div class="d-flex flex-wrap gap-2 mt-auto" aria-label="Acciones para {{ movie.get('title', 'película') }}">
               <a class="btn btn-outline-primary btn-sm" href="/movies/{{ movie.get('_id') }}">Consultar</a>
               <a class="btn btn-outline-secondary btn-sm" href="/movies/{{ movie.get('_id') }}/edit">Editar</a>
-              <a class="btn btn-outline-danger btn-sm" href="/movies/{{ movie.get('_id') }}/delete">Eliminar</a>
+              <a href="{{ url_for('delete_movie', id=movie.get('_id')) }}" class="btn btn-outline-danger btn-sm">Eliminar</a>
             </div>
           </div>
         </article>

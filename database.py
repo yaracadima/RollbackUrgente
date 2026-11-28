@@ -14,7 +14,6 @@ def get_database():
     uri = os.getenv("MONGODB_URI")
     if not uri:
         raise RuntimeError("Define MONGODB_URI para conectar con MongoDB.")
-
     client = MongoClient(uri, serverSelectionTimeoutMS=5000)
     database_name = os.getenv("MONGODB_DATABASE", "cineplus")
     return client[database_name]
