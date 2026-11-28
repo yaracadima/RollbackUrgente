@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}CinePlus · Catálogo{% endblock %}
+{% block content %}
+<section class="text-center py-5">
+  <h1 class="display-5 fw-bold">CinePlus</h1>
+  <p class="lead text-secondary">Explora las películas de nuestro catálogo.</p>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('list_movies') }}">Ver catálogo</a>
+</section>
+{% endblock %}

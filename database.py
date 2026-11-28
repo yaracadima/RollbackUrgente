@@ -1,13 +1,30 @@
-from pymongo import MongoClient
-import certifi
+"""MongoDB connection helpers."""
 
-MONGO_URI = "mongodb+srv://yaracadima_db_user:5nObjFeS2z52XmUM@cluster0.yoyba5k.mongodb.net"
-ca = certifi.where()
+import os
+from functools import lru_cache
+
+from pymongo import MongoClient
+
+from dotenv import load_dotenv
+
+load_dotenv()
+@lru_cache(maxsize=1)
+def get_database():
+    """Return the configured MongoDB database, creating the client lazily."""
+    uri = os.getenv("MONGODB_URI")
+    if not uri:
+        raise RuntimeError("Define MONGODB_URI para conectar con MongoDB.")
+
+    client = MongoClient(uri, serverSelectionTimeoutMS=5000)
+    database_name = os.getenv("MONGODB_DATABASE", "cineplus")
+    return client[database_name]
+
+
+def get_movies_collection():
+    return get_database()["movies"]
+
 
 def dbConnection():
-    try:
-        client = MongoClient(MONGO_URI, tlsCAFile=ca)
-        db=client["dbb_products_app"]
-    except ConnectionError:
-        print('error de conexion con la bdd')
-    return db
+    """Compatibility helper used by the existing Flask routes."""
+    return get_database()
+
