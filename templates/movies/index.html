@@ -14,7 +14,7 @@
     {% for movie in movies %}
       <div class="col">
         <article class="card h-100 shadow-sm">
-          <img class="card-img-top" src="{{ movie.get('poster_url') or url_for('static', filename='images/poster-placeholder.svg') }}"
+          <img class="card-img-top" style="aspect-ratio: 2 / 3; object-fit: cover;" src="{{ movie.get('poster_url') or url_for('static', filename='images/poster-placeholder.svg') }}"
                alt="Póster de {{ movie.get('title', 'película') }}"
                loading="lazy"
                onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/poster-placeholder.svg') }}'">
