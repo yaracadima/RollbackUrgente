@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Registrar película · CinePlus{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 640px;">
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4 p-md-5">
+      <h1 class="h3 mb-4">Registrar película</h1>
+
+      <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="title" class="form-label">Título</label>
+          <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-8">
+            <label for="genre" class="form-label">Género</label>
+            <input type="text" id="genre" name="genre" class="form-control" required>
+          </div>
+          <div class="col-md-4">
+            <label for="year" class="form-label">Año de estreno</label>
+            <input type="number" id="year" name="year" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="poster" class="form-label">Póster (opcional)</label>
+          <input type="file" id="poster" name="poster" class="form-control"
+                 accept="image/jpeg,image/png,image/webp"
+                 aria-describedby="poster-help">
+          <div id="poster-help" class="form-text">JPG, PNG o WebP.</div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <a href="{{ url_for('list_movies') }}" class="btn btn-outline-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Guardar película</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
