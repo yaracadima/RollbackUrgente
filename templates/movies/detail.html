@@ -17,6 +17,14 @@
     <li>No hay próximas funciones programadas.</li>
   {% endfor %}
 </ul>
+  <h2>Datos de la película</h2>
+  {% if movie.get('synopsis') %}<p>{{ movie.synopsis }}</p>{% endif %}
+  <dl>
+    {% if movie.get('director') %}<dt>Director</dt><dd>{{ movie.director }}</dd>{% endif %}
+    {% if movie.get('genre') %}<dt>Género</dt><dd>{{ movie.genre }}</dd>{% endif %}
+    {% if movie.get('year') %}<dt>Año de estreno</dt><dd>{{ movie.year }}</dd>{% endif %}
+    {% if movie.get('duration') %}<dt>Duración</dt><dd>{{ movie.duration }} minutos</dd>{% endif %}
+  </dl>
   <a href="{{ url_for('list_movies') }}">Volver al catálogo</a>
   
 {% endblock %}

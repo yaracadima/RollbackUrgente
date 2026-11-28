@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Editar película · CinePlus{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 640px;">
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4 p-md-5">
+      <h1 class="h3 mb-4">Editar película</h1>
+
+      <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="title" class="form-label">Título</label>
+          <input type="text" id="title" name="title" class="form-control"
+                 value="{{ movie.title }}" required>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-8">
+            <label for="genre" class="form-label">Género</label>
+            <input type="text" id="genre" name="genre" class="form-control"
+                   value="{{ movie.genre }}" required>
+          </div>
+          <div class="col-md-4">
+            <label for="year" class="form-label">Año de estreno</label>
+            <input type="number" id="year" name="year" class="form-control"
+                   min="1" max="9999" value="{{ movie.year }}" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="synopsis" class="form-label">Sinopsis</label>
+          <textarea id="synopsis" name="synopsis" rows="3" class="form-control">{{ movie.get('synopsis') or '' }}</textarea>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-8">
+            <label for="director" class="form-label">Director</label>
+            <input type="text" id="director" name="director" class="form-control"
+                   value="{{ movie.get('director') or '' }}">
+          </div>
+          <div class="col-md-4">
+            <label for="duration" class="form-label">Duración en minutos</label>
+            <input type="number" id="duration" name="duration" min="1" class="form-control"
+                   value="{{ movie.get('duration') or '' }}">
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="poster" class="form-label">Reemplazar póster</label>
+          <input type="file" id="poster" name="poster" class="form-control"
+                 accept="image/jpeg,image/png,image/webp" aria-describedby="poster-help">
+          <div id="poster-help" class="form-text">JPG, PNG o WebP. Si lo dejas vacío, se conserva el póster actual.</div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <a href="{{ url_for('list_movies') }}" class="btn btn-outline-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

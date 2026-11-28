@@ -17,6 +17,17 @@ app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
 db = dbase.dbConnection()
 movies_collection = db["movies"]
 
+# Validar ID de MongoDB
+def get_movie(id):
+    try:
+        movie = movies_collection.find_one({
+            "_id": ObjectId(id)
+        })
+        if movie is None:
+            abort(404, description="Película no encontrada.")
+        return movie
+    except InvalidId:
+        abort(404, description="Película no encontrada.")
 
 @app.route("/")
 def catalog_home():
@@ -107,14 +118,7 @@ def new_movie():
 #HU-02: Consultar ficha de una pelicula
 @app.route("/movies/<movie_id>")
 def movie_detail(movie_id):
-    try:
-        movie_object_id = ObjectId(movie_id)
-    except InvalidId:
-        abort(404, description="Película no encontrada.")
-
-    movie = movies_collection.find_one({"_id": movie_object_id})
-    if movie is None:
-        abort(404, description="Película no encontrada.")
+    movie = get_movie(movie_id)
 
     # Convertir la hora actual a la zona horaria de Bolivia
     bolivia = timezone(timedelta(hours=-4))
@@ -130,6 +134,61 @@ def movie_detail(movie_id):
             upcoming.append(starts_at.astimezone(bolivia))
     upcoming.sort()
     return render_template("movies/detail.html", movie=movie, upcoming=upcoming)
+
+
+# HU-03: Editar los datos de la película
+@app.route("/movies/<movie_id>/edit", methods=["GET", "POST"])
+def update_movie(movie_id):
+    movie = get_movie(movie_id)
+    if request.method == "GET":
+        return render_template("movies/edit.html", movie=movie)
+
+    title = request.form.get("title", "").strip()
+    genre = request.form.get("genre", "").strip()
+    if not title or not genre:
+        abort(400, description="El título y el género son obligatorios.")
+
+    try:
+        year = int(request.form.get("year", ""))
+        if not 1 <= year <= 9999:
+            raise ValueError
+    except ValueError:
+        abort(400, description="El año de estreno debe ser válido.")
+
+    duration_text = request.form.get("duration", "").strip()
+    try:
+        duration = int(duration_text) if duration_text else None
+        if duration is not None and duration < 1:
+            raise ValueError
+    except ValueError:
+        abort(400, description="La duración debe ser un número entero mayor que cero.")
+
+    bolivia = timezone(timedelta(hours=-4))
+    for showtime in movie.get("showtimes", []):
+        starts_at = showtime.get("starts_at") if isinstance(showtime, dict) else showtime
+        if isinstance(starts_at, datetime):
+            if starts_at.tzinfo is None:
+                starts_at = starts_at.replace(tzinfo=timezone.utc)
+            if starts_at.astimezone(bolivia).year < year:
+                abort(400, description="El año de estreno no puede ser posterior a una función registrada.")
+
+    fields = {
+        "title": title,
+        "genre": genre,
+        "year": year,
+        "synopsis": request.form.get("synopsis", "").strip(),
+        "director": request.form.get("director", "").strip(),
+        "duration": duration,
+    }
+    poster = request.files.get("poster")
+    if poster:
+        fields["poster_url"] = save_poster(poster, title)
+
+    result = movies_collection.update_one({"_id": movie["_id"]}, {"$set": fields})
+    if result.matched_count == 0:
+        abort(404, description="Película no encontrada.")
+
+    return redirect(url_for("list_movies"))
 
 # HU-05: listar el catálogo de películas
 @app.route("/movies")
